@@ -1,0 +1,22 @@
+{% extends "layouts/base.njk" %}
+{% set page = {
+"title": "Contacts Page",
+"description": "Страница контактов",
+"bodyClass": "page-contacts"
+} %}
+
+{% block header %}
+{% include "blocks/header/header.njk" %}
+{% endblock %}
+
+{% block content %}
+{% set headTitle = "Контакты" %}
+{% set breadcrumbsCurrent = "Контакты" %}
+{% set contactsTitle = "Свяжитесь с нами" %}
+{% include "blocks/head/head.njk" %}
+{% include "blocks/contacts/contacts.njk" %}
+{% endblock %}
+
+{% block footer %}
+{% include "blocks/footer/footer.njk" %}
+{% endblock %}

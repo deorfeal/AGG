@@ -1,0 +1,49 @@
+$color-text: #02094b;
+$color-text-second: #ffffff;
+$color-background: #f7f7f7;
+$color-background-second: #cdcdcd;
+
+$color-white: #ffffff;
+$color-black: #000000;
+$color-brand-primary: #010648;
+$color-brand-accent: #00afff;
+$color-link-hover: #00afff;
+$color-header-langs-bg: #eaeaea;
+$color-select-bg: #1a1a1a;
+$color-select-menu-bg: #111111;
+$color-select-border: #ffffff33;
+$color-select-menu-border: #ffffff22;
+$color-select-option-hover: #ffffff1f;
+$color-overlay-dark: rgba($color-black, 60%);
+$color-overlay-gradient-end: #000000;
+$color-card-shadow: rgba($color-black, 0.1);
+$color-card-shadow-soft: rgba($color-black, 0.08);
+
+@function adaptive-value($desktopSize, $mobileSize) {
+  $minWidth: 375; // Минимальная ширина экрана
+  $maxWidth: 1200; // Максимальная ширина экрана
+
+  @if $desktopSize >$mobileSize {
+    // Уменьшение от десктопа к мобильному
+    $addSize: $desktopSize - $mobileSize;
+    @return clamp(
+      #{$mobileSize}rem,
+      calc(
+        #{$mobileSize}rem + #{$addSize} *
+          ((100vw - #{$minWidth}rem) / (#{$maxWidth} - #{$minWidth}))
+      ),
+      #{$desktopSize}rem
+    );
+  } @else {
+    // Увеличение от десктопа к мобильному
+    $addSize: $mobileSize - $desktopSize;
+    @return clamp(
+      #{$desktopSize}rem,
+      calc(
+        #{$mobileSize}rem - #{$addSize} *
+          ((100vw - #{$minWidth}rem) / (#{$maxWidth} - #{$minWidth}))
+      ),
+      #{$mobileSize}rem
+    );
+  }
+}

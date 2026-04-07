@@ -1,0 +1,84 @@
+@use "../../scss/base/vars" as *;
+
+.advantages {
+  margin-bottom: adaptive-value(60, 30);
+
+  &__inner {
+    position: relative;
+    padding: adaptive-value(60, 30) 0;
+  }
+
+  &__items {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: adaptive-value(30, 20);
+  }
+
+  &__item {
+    background: $color-background;
+    display: flex;
+    align-items: flex-start;
+    gap: adaptive-value(40, 20);
+    border-radius: 10rem;
+    padding: adaptive-value(35, 24);
+  }
+
+  &__icon {
+    width: adaptive-value(90, 70);
+    min-width: adaptive-value(90, 70);
+    height: adaptive-value(90, 70);
+    background: linear-gradient(
+      81.65deg,
+      $color-brand-primary -38.65%,
+      $color-brand-accent 150.92%
+    );
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      width: adaptive-value(50, 32);
+      height: adaptive-value(50, 32);
+      object-fit: contain;
+    }
+  }
+
+  &__text {
+    font-size: adaptive-value(18, 14);
+    line-height: adaptive-value(26, 20);
+    color: $color-text;
+    margin-bottom: adaptive-value(30, 20);
+
+    &:last-child {
+      margin-bottom: unset;
+    }
+  }
+}
+
+@media (max-width: 1200px) {
+  .advantages {
+    &__item {
+      flex-direction: column;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .advantages {
+    &__item {
+      flex-direction: row;
+    }
+    &__items {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+@media (max-width: 550px) {
+  .advantages {
+    &__item {
+      flex-direction: column;
+    }
+  }
+}

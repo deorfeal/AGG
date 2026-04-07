@@ -1,0 +1,84 @@
+@use "../../scss/base/vars" as *;
+
+.services {
+  margin-bottom: adaptive-value(60, 30);
+
+  &__inner {
+    position: relative;
+    padding: adaptive-value(60, 30) 0;
+  }
+
+  &__items {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: adaptive-value(30, 20);
+  }
+
+  &__item {
+    border-radius: 10rem;
+    overflow: hidden;
+    height: adaptive-value(350, 240);
+    width: 100%;
+    position: relative;
+    padding: adaptive-value(20, 16);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    &:hover {
+      .services__img {
+        transform: scale(1.05);
+      }
+    }
+  }
+
+  &__img {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    transition: transform 0.3s;
+    &::after {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgba($color-black, 0) 57.14%,
+        $color-overlay-gradient-end 89.86%
+      );
+      opacity: 0.4;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__title {
+    color: $color-text-second;
+    font-size: adaptive-value(24, 20);
+    line-height: adaptive-value(29, 24);
+    font-weight: 700;
+  }
+}
+
+@media (max-width: 1200px) {
+  .services {
+    &__items {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+}
+
+@media (max-width: 550px) {
+  .services {
+    &__items {
+      grid-template-columns: 1fr;
+    }
+  }
+}

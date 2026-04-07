@@ -1,0 +1,166 @@
+@use "../../scss/base/vars" as *;
+
+.footer {
+  background: $color-text;
+  padding-top: adaptive-value(50, 30);
+
+  &__top {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: adaptive-value(40, 30);
+    gap: 30rem;
+  }
+
+  &__box {
+    &:nth-child(2) {
+      .footer__subtitle {
+        margin-bottom: adaptive-value(30, 12);
+      }
+    }
+  }
+
+  &__subtitle {
+    margin-bottom: 12rem;
+    color: $color-white;
+    font-size: adaptive-value(16, 14);
+    line-height: adaptive-value(20, 16);
+    font-weight: 700;
+  }
+
+  &__menu {
+    display: flex;
+    align-items: center;
+    gap: adaptive-value(50, 20);
+  }
+
+  &__menu-link {
+    font-size: 14rem;
+    line-height: 17rem;
+    color: $color-white;
+    transition: color 0.3s;
+    &:hover {
+      color: $color-link-hover;
+    }
+  }
+
+  &__contacts {
+    display: flex;
+    align-items: center;
+    gap: adaptive-value(30, 20);
+  }
+
+  &__contact {
+    display: flex;
+    align-items: center;
+    gap: adaptive-value(15, 10);
+  }
+
+  &__contact-icon {
+    width: adaptive-value(40, 32);
+    min-width: adaptive-value(40, 32);
+    height: adaptive-value(40, 32);
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba($color-white, 15%);
+
+    svg {
+      width: 18rem;
+      height: 18rem;
+    }
+  }
+
+  &__contact-subtext {
+    margin-bottom: 5rem;
+    font-size: 14rem;
+    line-height: 14rem;
+    color: $color-white;
+  }
+
+  &__contact-text,
+  &__contact-link {
+    color: $color-white;
+    font-weight: 700;
+    font-size: adaptive-value(16, 14);
+    line-height: adaptive-value(20, 16);
+  }
+
+  &__contact-link {
+    transition: color 0.3s;
+    &:hover {
+      color: $color-link-hover;
+    }
+  }
+
+  &__bottom {
+    padding: 15rem 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__copy {
+    color: rgba($color-text-second, 50%);
+    font-size: 12rem;
+    line-height: 15rem;
+  }
+
+  &__develoer {
+    display: flex;
+    align-items: flex-end;
+    gap: 10rem;
+  }
+
+  &__developer-text {
+    color: rgba($color-white, 50%);
+    font-size: 12rem;
+    line-height: 15rem;
+    margin-bottom: 3rem;
+  }
+
+  &__developer-logo {
+    width: 110rem;
+    min-width: 110rem;
+    height: 30rem;
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
+@media (max-width: 1200px) {
+  .footer {
+    &__top {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    &__subtitle {
+      display: none;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .footer {
+    &__top {
+      align-items: flex-start;
+    }
+    &__subtitle {
+      display: block;
+    }
+    &__menu {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    &__contacts {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+}

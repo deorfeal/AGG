@@ -1,0 +1,47 @@
+@use "../../scss/base/vars" as *;
+
+.companies {
+  margin-bottom: adaptive-value(60, 30);
+
+  &__inner {
+    position: relative;
+    padding: adaptive-value(60, 30) 0;
+  }
+
+  &__swiper {
+    .swiper-wrapper {
+      margin-bottom: adaptive-value(30, 20);
+    }
+  }
+
+  .swiper {
+    margin: -5rem;
+    padding: 5rem;
+  }
+
+  &__slide {
+    width: 100%;
+    height: adaptive-value(98, 80);
+    border-radius: 10rem;
+    background: $color-white;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0rem 2.5rem 5rem $color-card-shadow;
+  }
+
+  .swiper-slide {
+    display: flex;
+  }
+
+  &__img {
+    display: block;
+    width: adaptive-value(108, 80);
+    height: adaptive-value(89, 70);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+}

@@ -1,0 +1,33 @@
+@use "../../scss/base/vars" as *;
+
+.breadcrumbs {
+  &__list {
+    display: flex;
+    align-items: center;
+    gap: 10rem;
+    flex-wrap: wrap;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 10rem;
+    color: $color-white;
+    font-size: 14rem;
+    line-height: 17rem;
+
+    svg {
+      width: 12rem;
+      min-width: 12rem;
+      height: 12rem;
+    }
+  }
+
+  &__link {
+    color: rgba($color-white, 50%);
+    transition: color 0.3s;
+    &:hover {
+      color: $color-link-hover;
+    }
+  }
+}

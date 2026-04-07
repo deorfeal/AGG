@@ -1,0 +1,19 @@
+<section class="head">
+  <div class="big-container">
+    <div class="head__inner">
+      <picture class="head__img">
+        <img src="{{ headImageSrc or 'images/head-img.jpg' }}" alt="{{ headImageAlt or 'img' }}" data-aos="zoom-out">
+      </picture>
+      <div class="container">
+        <div class="head__wrapper" data-aos="fade-right">
+          <div class="head__breadcrumbs">
+            {% include "blocks/breadcrumbs/breadcrumbs.njk" %}
+          </div>
+          <div class="head__titling titling titling--white">
+            <h1 class="titling__title">{{ headTitle or "О компании" }}</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

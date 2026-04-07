@@ -1,0 +1,22 @@
+{% extends "layouts/base.njk" %}
+{% set page = {
+  "title": "Services Page",
+  "description": "Страница услуг",
+  "bodyClass": "page-services"
+} %}
+
+{% block header %}
+{% include "blocks/header/header.njk" %}
+{% endblock %}
+
+{% block content %}
+{% set headTitle = "Услуги" %}
+{% set breadcrumbsCurrent = "Услуги" %}
+
+{% include "blocks/head/head.njk" %}
+{% include "blocks/services/services.njk" %}
+{% endblock %}
+
+{% block footer %}
+{% include "blocks/footer/footer.njk" %}
+{% endblock %}

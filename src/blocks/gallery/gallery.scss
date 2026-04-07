@@ -1,0 +1,64 @@
+@use "../../scss/base/vars" as *;
+
+.gallery {
+  margin-bottom: adaptive-value(60, 30);
+
+  &__inner {
+    position: relative;
+    padding: adaptive-value(60, 30) 0;
+  }
+
+  &__swiper {
+    .swiper-wrapper {
+      margin-bottom: adaptive-value(30, 20);
+    }
+  }
+
+  .swiper {
+    margin: adaptive-value(-30, -20);
+    padding: adaptive-value(30, 20);
+  }
+
+  .swiper-slide {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10rem;
+  }
+
+  &__img {
+    display: block;
+    width: 100%;
+    height: adaptive-value(360, 160);
+    border-radius: 10rem;
+    overflow: hidden;
+    &:hover {
+      .gallery__image {
+        transform: scale(1.05);
+      }
+    }
+    &:nth-child(3) {
+      height: adaptive-value(730, 330);
+      grid-area: 1 / 2 / 3 / 3;
+    }
+  }
+
+  &__image {
+    width: 100%;
+    height: 100%;
+    display: block;
+    transition: transform 0.3s;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .gallery {
+    .swiper-slide {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+}

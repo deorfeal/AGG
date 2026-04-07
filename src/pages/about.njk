@@ -1,0 +1,45 @@
+{% extends "layouts/base.njk" %}
+{% set page = {
+  "title": "About Page",
+  "description": "Пример второй страницы в структуре starter",
+  "bodyClass": "page-about"
+} %}
+
+{% block header %}
+{% include "blocks/header/header.njk" %}
+{% endblock %}
+
+{% block content %}
+{% set headTitle = "О компании" %}
+{% set breadcrumbsCurrent = "О нас" %}
+{% include "blocks/head/head.njk" %}
+{% from "blocks/about/about.njk" import aboutBlock %}
+{% set aboutTexts = [
+"Онлайн платформа DDR-PRO позволяет вести и консолидировать все отчеты по бурению, заканчиванию и капитальному ремонту скважин в облачной базе данных.",
+"С целью повысить эффективность управления производственными процессами DDR-PRO автоматически формирует дэшборды, содержащие краткий и информативный обзор операций по бурению и КРС на месторождении. А также является KPI инструментом для анализа и принятия эффективных решений.",
+"DDR-PRO служит облачным центром для документов, отчетов и различных данных полученных в ходе строительства или ремонта скважины."
+] %}
+
+{{ aboutBlock({
+  title: "О нас",
+  showTopDecor: false,
+  topTexts: aboutTexts,
+  contentLayout: "image-text",
+  contentImageSrc: "images/about-img-long.jpg",
+  contentRightTexts: aboutTexts
+}) }}
+
+{% include "blocks/gallery/gallery.njk" %}
+
+{{ aboutBlock({
+  title: "Наша миссия",
+  topTexts: aboutTexts,
+  reverseTop: true
+}) }}
+
+{% include "blocks/advantages/advantages.njk" %}
+{% endblock %}
+
+{% block footer %}
+{% include "blocks/footer/footer.njk" %}
+{% endblock %}
