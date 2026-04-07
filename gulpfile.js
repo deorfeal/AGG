@@ -13,6 +13,7 @@ const esbuild = require("esbuild");
 const browserslistToEsbuild = require("browserslist-to-esbuild").default;
 const fs = require("fs");
 const path = require("path");
+const { execSync } = require("child_process");
 const convertFonts = require("./scripts/convert-fonts");
 
 const paths = {
@@ -237,6 +238,30 @@ async function pruneProductionArtifacts() {
   }
 }
 
+function formatDistHtml(done) {
+  try {
+    execSync('npx prettier --write "dist/*.html"', { stdio: "ignore" });
+
+    const htmlDir = path.resolve(paths.root.dist);
+    const files = fs.readdirSync(htmlDir).filter((fileName) => fileName.endsWith(".html"));
+
+    files.forEach((fileName) => {
+      const filePath = path.join(htmlDir, fileName);
+      const source = fs.readFileSync(filePath, "utf8");
+      const normalized = source
+        .replace(/\r\n/g, "\n")
+        .replace(/[ \t]+\n/g, "\n")
+        .replace(/\n\s*\n\s*\n+/g, "\n\n");
+
+      fs.writeFileSync(filePath, normalized);
+    });
+  } catch (error) {
+    console.error(error.message || error.toString());
+  }
+
+  done();
+}
+
 async function copyStatic() {
   const staticSource = path.resolve(paths.root.src, "static");
   const staticDest = path.resolve(paths.root.dist);
@@ -320,6 +345,7 @@ const build = series(
     series(scripts, scriptsMin),
     series(fonts, copyStatic),
   ),
+  formatDistHtml,
   pruneProductionArtifacts,
 );
 
@@ -330,6 +356,7 @@ exports.stylesMin = stylesMin;
 exports.scripts = scripts;
 exports.scriptsMin = scriptsMin;
 exports.pruneProductionArtifacts = pruneProductionArtifacts;
+exports.formatDistHtml = formatDistHtml;
 exports.copyStatic = copyStatic;
 exports.fonts = fonts;
 exports.watch = series(
