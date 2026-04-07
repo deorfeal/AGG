@@ -115,10 +115,6 @@ function styles() {
 }
 
 async function stylesMin() {
-  if (!isProduction()) {
-    return;
-  }
-
   const sourcePath = path.resolve(paths.styles.dest, "style.css");
   const destPath = path.resolve(paths.styles.dest, "style.min.css");
   const source = await fs.promises.readFile(sourcePath, "utf8");
@@ -150,10 +146,6 @@ async function scripts() {
           format: "esm",
           minify: false,
           sourcemap: !isProduction(),
-          external:
-            name === "app"
-              ? ["./aos.js", "./swiper.js", "./fancybox.js", "../../js/swiper.js", "../../js/fancybox.js"]
-              : [],
           target: browserslistToEsbuild(),
           logLevel: "silent",
         })
@@ -171,10 +163,6 @@ async function scripts() {
 }
 
 async function scriptsMin() {
-  if (!isProduction()) {
-    return;
-  }
-
   await Promise.all(
     paths.scripts.entries.map(({ entry, name }) =>
       esbuild.build({
@@ -184,10 +172,6 @@ async function scriptsMin() {
         format: "esm",
         minify: true,
         sourcemap: false,
-        external:
-          name === "app"
-            ? ["./aos.js", "./swiper.js", "./fancybox.js", "../../js/swiper.js", "../../js/fancybox.js"]
-            : [],
         target: browserslistToEsbuild(),
         logLevel: "silent",
       })
@@ -197,6 +181,49 @@ async function scriptsMin() {
 
 async function pruneProductionArtifacts() {
   if (!isProduction()) {
+    return;
+  }
+
+  const jsDir = path.resolve(paths.root.dist, "js");
+  const cssDir = path.resolve(paths.root.dist, "css");
+
+  if (fs.existsSync(jsDir)) {
+    const jsFiles = await fs.promises.readdir(jsDir);
+    await Promise.all(
+      jsFiles.map(async (fileName) => {
+        const shouldKeep =
+          fileName === "app.js" ||
+          fileName === "app.min.js" ||
+          fileName === "aos.min.js" ||
+          fileName === "swiper.min.js" ||
+          fileName === "fancybox.min.js";
+
+        if (!shouldKeep) {
+          await fs.promises.rm(path.join(jsDir, fileName), { force: true });
+        }
+      })
+    );
+  }
+
+  if (fs.existsSync(cssDir)) {
+    const cssFiles = await fs.promises.readdir(cssDir);
+    await Promise.all(
+      cssFiles.map(async (fileName) => {
+        const shouldKeep =
+          fileName === "style.css" ||
+          fileName === "style.min.css" ||
+          fileName === "libs.min.css";
+
+        if (!shouldKeep) {
+          await fs.promises.rm(path.join(cssDir, fileName), { force: true });
+        }
+      })
+    );
+  }
+}
+
+async function pruneDevelopmentArtifacts() {
+  if (isProduction()) {
     return;
   }
 
@@ -334,7 +361,13 @@ const dev = series(setDevelopment, clean, parallel(html, styles, scripts, series
 const buildDev = series(
   setDevelopment,
   clean,
-  parallel(html, styles, scripts, series(fonts, copyStatic)),
+  parallel(
+    html,
+    series(styles, stylesMin),
+    series(scripts, scriptsMin),
+    series(fonts, copyStatic),
+  ),
+  pruneDevelopmentArtifacts,
 );
 const build = series(
   setProduction,
@@ -356,6 +389,7 @@ exports.stylesMin = stylesMin;
 exports.scripts = scripts;
 exports.scriptsMin = scriptsMin;
 exports.pruneProductionArtifacts = pruneProductionArtifacts;
+exports.pruneDevelopmentArtifacts = pruneDevelopmentArtifacts;
 exports.formatDistHtml = formatDistHtml;
 exports.copyStatic = copyStatic;
 exports.fonts = fonts;
