@@ -28,9 +28,30 @@ const paths = {
     dest: "dist/css",
   },
   scripts: {
-    entry: "src/js/main.js",
+    entries: [
+      {
+        entry: "src/js/app.js",
+        name: "app",
+      },
+      {
+        entry: "src/js/swiper.js",
+        name: "swiper",
+      },
+      {
+        entry: "src/js/aos.js",
+        name: "aos",
+      },
+      {
+        entry: "src/js/fancybox.js",
+        name: "fancybox",
+      },
+      {
+        entry: "src/js/libs-css.js",
+        name: "../css/libs",
+      },
+    ],
     watch: ["src/js/**/*.js", "src/blocks/**/*.js"],
-    destFile: "dist/js/main.js",
+    destDir: "dist/js",
   },
   static: {
     src: "src/static/**/*",
@@ -39,7 +60,7 @@ const paths = {
 };
 
 function isProduction() {
-  return process.env.NODE_ENV === "production";
+  return process.env.NODE_ENV !== "development";
 }
 
 function onError(error) {
@@ -119,16 +140,24 @@ async function stylesMin() {
 
 async function scripts() {
   try {
-    await esbuild.build({
-      entryPoints: [paths.scripts.entry],
-      outfile: paths.scripts.destFile,
-      bundle: true,
-      format: "esm",
-      minify: false,
-      sourcemap: !isProduction(),
-      target: browserslistToEsbuild(),
-      logLevel: "silent",
-    });
+    await Promise.all(
+      paths.scripts.entries.map(({ entry, name }) =>
+        esbuild.build({
+          entryPoints: [entry],
+          outfile: path.resolve(paths.scripts.destDir, `${name}.js`),
+          bundle: true,
+          format: "esm",
+          minify: false,
+          sourcemap: !isProduction(),
+          external:
+            name === "app"
+              ? ["./aos.js", "./swiper.js", "./fancybox.js", "../../js/swiper.js", "../../js/fancybox.js"]
+              : [],
+          target: browserslistToEsbuild(),
+          logLevel: "silent",
+        })
+      )
+    );
   } catch (error) {
     console.error(error.message || error.toString());
 
@@ -145,16 +174,67 @@ async function scriptsMin() {
     return;
   }
 
-  await esbuild.build({
-    entryPoints: [paths.scripts.entry],
-    outfile: path.resolve(paths.root.dist, "js", "main.min.js"),
-    bundle: true,
-    format: "esm",
-    minify: true,
-    sourcemap: false,
-    target: browserslistToEsbuild(),
-    logLevel: "silent",
-  });
+  await Promise.all(
+    paths.scripts.entries.map(({ entry, name }) =>
+      esbuild.build({
+        entryPoints: [entry],
+        outfile: path.resolve(paths.scripts.destDir, `${name}.min.js`),
+        bundle: true,
+        format: "esm",
+        minify: true,
+        sourcemap: false,
+        external:
+          name === "app"
+            ? ["./aos.js", "./swiper.js", "./fancybox.js", "../../js/swiper.js", "../../js/fancybox.js"]
+            : [],
+        target: browserslistToEsbuild(),
+        logLevel: "silent",
+      })
+    )
+  );
+}
+
+async function pruneProductionArtifacts() {
+  if (!isProduction()) {
+    return;
+  }
+
+  const jsDir = path.resolve(paths.root.dist, "js");
+  const cssDir = path.resolve(paths.root.dist, "css");
+
+  if (fs.existsSync(jsDir)) {
+    const jsFiles = await fs.promises.readdir(jsDir);
+    await Promise.all(
+      jsFiles.map(async (fileName) => {
+        const shouldKeep =
+          fileName === "app.js" ||
+          fileName === "app.min.js" ||
+          fileName === "aos.min.js" ||
+          fileName === "swiper.min.js" ||
+          fileName === "fancybox.min.js";
+
+        if (!shouldKeep) {
+          await fs.promises.rm(path.join(jsDir, fileName), { force: true });
+        }
+      })
+    );
+  }
+
+  if (fs.existsSync(cssDir)) {
+    const cssFiles = await fs.promises.readdir(cssDir);
+    await Promise.all(
+      cssFiles.map(async (fileName) => {
+        const shouldKeep =
+          fileName === "style.css" ||
+          fileName === "style.min.css" ||
+          fileName === "libs.min.css";
+
+        if (!shouldKeep) {
+          await fs.promises.rm(path.join(cssDir, fileName), { force: true });
+        }
+      })
+    );
+  }
 }
 
 async function copyStatic() {
@@ -240,6 +320,7 @@ const build = series(
     series(scripts, scriptsMin),
     series(fonts, copyStatic),
   ),
+  pruneProductionArtifacts,
 );
 
 exports.clean = clean;
@@ -248,6 +329,7 @@ exports.styles = styles;
 exports.stylesMin = stylesMin;
 exports.scripts = scripts;
 exports.scriptsMin = scriptsMin;
+exports.pruneProductionArtifacts = pruneProductionArtifacts;
 exports.copyStatic = copyStatic;
 exports.fonts = fonts;
 exports.watch = series(

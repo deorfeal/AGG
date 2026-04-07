@@ -1,6 +1,5 @@
-import { Fancybox } from "@fancyapps/ui/dist/fancybox/";
-import Swiper from "swiper";
-import { Navigation, Pagination } from "swiper/modules";
+import { Fancybox } from "../../js/fancybox.js";
+import { Navigation, Pagination, Swiper } from "../../js/swiper.js";
 
 export function initGallery() {
   document.querySelectorAll(".gallery__swiper").forEach((element) => {

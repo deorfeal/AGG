@@ -1,5 +1,4 @@
-import Swiper from "swiper";
-import { Grid, Navigation, Pagination } from "swiper/modules";
+import { Grid, Navigation, Pagination, Swiper } from "../../js/swiper.js";
 
 export function initCompanies() {
   document.querySelectorAll(".companies__swiper").forEach((element) => {

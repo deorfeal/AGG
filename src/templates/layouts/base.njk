@@ -15,7 +15,7 @@
     rel="stylesheet">
 
   <link rel="stylesheet" href="css/{{ 'style.min.css' if build.isProd else 'style.css' }}" />
-  <link rel="stylesheet" href="js/{{ 'main.min.css' if build.isProd else 'main.css' }}" />
+  <link rel="stylesheet" href="css/{{ 'libs.min.css' if build.isProd else 'libs.css' }}" />
 </head>
 <body class="{{ page.bodyClass or '' }}">
   <div class="wrapper">
@@ -25,6 +25,9 @@
     </main>
     {% block footer %}{% endblock %}
   </div>
-  <script type="module" src="js/{{ 'main.min.js' if build.isProd else 'main.js' }}"></script>
+  <script type="module" src="js/{{ 'swiper.min.js' if build.isProd else 'swiper.js' }}"></script>
+  <script type="module" src="js/{{ 'aos.min.js' if build.isProd else 'aos.js' }}"></script>
+  <script type="module" src="js/{{ 'fancybox.min.js' if build.isProd else 'fancybox.js' }}"></script>
+  <script type="module" src="js/{{ 'app.min.js' if build.isProd else 'app.js' }}"></script>
 </body>
 </html>

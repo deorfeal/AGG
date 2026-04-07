@@ -1,6 +1,5 @@
-import { Fancybox } from "@fancyapps/ui/dist/fancybox/";
-import Swiper from "swiper";
-import { FreeMode, Navigation, Pagination } from "swiper/modules";
+import { Fancybox } from "../../js/fancybox.js";
+import { FreeMode, Navigation, Pagination, Swiper } from "../../js/swiper.js";
 
 export function initAttachments() {
   document.querySelectorAll(".attachments__swiper").forEach((element) => {
