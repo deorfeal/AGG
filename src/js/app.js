@@ -1,8 +1,8 @@
 import { AOS } from "./aos.js";
-import { initAttachments } from "../blocks/attachments/attachments";
-import { initCompanies } from "../blocks/companies/companies";
-import { initGallery } from "../blocks/gallery/gallery";
-import { initHeaderLangsHover } from "../blocks/header/header";
+import { initAttachments } from "../blocks/attachments/attachments.js";
+import { initCompanies } from "../blocks/companies/companies.js";
+import { initGallery } from "../blocks/gallery/gallery.js";
+import { initHeaderLangsHover } from "../blocks/header/header.js";
 
 export function initApp() {
   AOS.init({

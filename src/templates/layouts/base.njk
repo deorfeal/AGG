@@ -25,6 +25,9 @@
     </main>
     {% block footer %}{% endblock %}
   </div>
+  <script type="module" src="js/aos.min.js"></script>
+  <script type="module" src="js/swiper.min.js"></script>
+  <script type="module" src="js/fancybox.min.js"></script>
   <script type="module" src="js/{{ 'app.min.js' if build.isProd else 'app.js' }}"></script>
 </body>
 </html>

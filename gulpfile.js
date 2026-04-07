@@ -29,11 +29,8 @@ const paths = {
     dest: "dist/css",
   },
   scripts: {
-    entries: [
-      {
-        entry: "src/js/app.js",
-        name: "app",
-      },
+    appEntry: "src/js/app.js",
+    vendorEntries: [
       {
         entry: "src/js/swiper.js",
         name: "swiper",
@@ -137,15 +134,52 @@ async function stylesMin() {
 
 async function scripts() {
   try {
+    await esbuild.build({
+      entryPoints: [paths.scripts.appEntry],
+      outfile: path.resolve(paths.scripts.destDir, "app.js"),
+      bundle: true,
+      external: ["./aos.js", "./swiper.js", "./fancybox.js", "../../js/swiper.js", "../../js/fancybox.js"],
+      format: "esm",
+      minify: false,
+      sourcemap: false,
+      target: browserslistToEsbuild(),
+      logLevel: "silent",
+    });
+
+    await rewriteAppVendorImports(path.resolve(paths.scripts.destDir, "app.js"));
+  } catch (error) {
+    console.error(error.message || error.toString());
+
+    throw error;
+  }
+
+  browserSync.reload();
+}
+
+async function scriptsMin() {
+  try {
     await Promise.all(
-      paths.scripts.entries.map(({ entry, name }) =>
+      [
+        {
+          entry: paths.scripts.appEntry,
+          name: "app",
+          bundle: true,
+          external: ["./aos.js", "./swiper.js", "./fancybox.js", "../../js/swiper.js", "../../js/fancybox.js"],
+        },
+        ...paths.scripts.vendorEntries.map((item) => ({
+          ...item,
+          bundle: true,
+          external: [],
+        })),
+      ].map(({ entry, name, bundle, external }) =>
         esbuild.build({
           entryPoints: [entry],
-          outfile: path.resolve(paths.scripts.destDir, `${name}.js`),
-          bundle: true,
+          outfile: path.resolve(paths.scripts.destDir, `${name}.min.js`),
+          bundle,
+          external,
           format: "esm",
-          minify: false,
-          sourcemap: !isProduction(),
+          minify: true,
+          sourcemap: false,
           target: browserslistToEsbuild(),
           logLevel: "silent",
         })
@@ -154,29 +188,18 @@ async function scripts() {
   } catch (error) {
     console.error(error.message || error.toString());
 
-    if (isProduction()) {
-      throw error;
-    }
+    throw error;
   }
 
-  browserSync.reload();
+  await rewriteAppVendorImports(path.resolve(paths.scripts.destDir, "app.min.js"));
 }
 
-async function scriptsMin() {
-  await Promise.all(
-    paths.scripts.entries.map(({ entry, name }) =>
-      esbuild.build({
-        entryPoints: [entry],
-        outfile: path.resolve(paths.scripts.destDir, `${name}.min.js`),
-        bundle: true,
-        format: "esm",
-        minify: true,
-        sourcemap: false,
-        target: browserslistToEsbuild(),
-        logLevel: "silent",
-      })
-    )
-  );
+async function rewriteAppVendorImports(filePath) {
+  const source = await fs.promises.readFile(filePath, "utf8");
+  const result = source
+    .replace(/((?:\.\.\/)*|\.\/)(aos|swiper|fancybox)\.js/g, "$1$2.min.js")
+    .replace(/(?:\.\.\/)+js\/(aos|swiper|fancybox)\.min\.js/g, "./$1.min.js");
+  await fs.promises.writeFile(filePath, result, "utf8");
 }
 
 async function pruneProductionArtifacts() {
@@ -186,6 +209,7 @@ async function pruneProductionArtifacts() {
 
   const jsDir = path.resolve(paths.root.dist, "js");
   const cssDir = path.resolve(paths.root.dist, "css");
+  const blocksDir = path.resolve(paths.root.dist, "blocks");
 
   if (fs.existsSync(jsDir)) {
     const jsFiles = await fs.promises.readdir(jsDir);
@@ -219,6 +243,10 @@ async function pruneProductionArtifacts() {
         }
       })
     );
+  }
+
+  if (fs.existsSync(blocksDir)) {
+    await fs.promises.rm(blocksDir, { recursive: true, force: true });
   }
 }
 
@@ -229,6 +257,7 @@ async function pruneDevelopmentArtifacts() {
 
   const jsDir = path.resolve(paths.root.dist, "js");
   const cssDir = path.resolve(paths.root.dist, "css");
+  const blocksDir = path.resolve(paths.root.dist, "blocks");
 
   if (fs.existsSync(jsDir)) {
     const jsFiles = await fs.promises.readdir(jsDir);
@@ -262,6 +291,10 @@ async function pruneDevelopmentArtifacts() {
         }
       })
     );
+  }
+
+  if (fs.existsSync(blocksDir)) {
+    await fs.promises.rm(blocksDir, { recursive: true, force: true });
   }
 }
 
